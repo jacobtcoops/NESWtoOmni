@@ -1,6 +1,7 @@
 close all
 clear
 
+% paths for MV4 SRIRs
 MV4_inputPath = 'D:\_RESOURCE\MaidaVale-IRs\230925_2-N3D-All\MV4\AS2\AS2\TOA\';
 MV4_convertedPath = ['D:\_RESOURCE\MaidaVale-IRs\230928-N3D-Omni-All' ...
         '\MV4\AS2\AS2\TOA\'];
@@ -9,6 +10,7 @@ MV4_convertedPath = ['D:\_RESOURCE\MaidaVale-IRs\230928-N3D-Omni-All' ...
 MV4_outputSRIRs = omniBatchConversion(  MV4_inputPath,...
                                         MV4_convertedPath    );
 
+% paths for MV5 SRIRs
 MV5_inputPath = 'D:\_RESOURCE\MaidaVale-IRs\230925_2-N3D-All\MV5\AS1\AS1\TOA\';
 MV5_convertedPath = ['D:\_RESOURCE\MaidaVale-IRs\230928-N3D-Omni-All' ...
         '\MV5\AS1\AS1\TOA\'];

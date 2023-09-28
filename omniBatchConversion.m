@@ -1,28 +1,28 @@
-function outputIRs = omniBatchConversion(rawIRPath, processedIRPath)
-%ambisonicOmniConverter     converts folder of SIRs to omnidirectional
-%   function takes in a path and converts groups of four SIRs from a single
-%   source-receiver combination with 4 orientations to a single,
+function outputSRIRs = omniBatchConversion(inputSRIRPath, outputSRIRPath)
+%omniBatchConversion     converts folder of SRIRs to omnidirectional
+%   function takes in a path and converts groups of four SRIRs from a 
+%   single source-receiver combination with 4 orientations to a single,
 %   omnidirectional SIR
 %   this interfaces with the function NESWtoOmni.m
-%   the resultant SIRs are saved in the processedIRPath
+%   the resultant SIRs are saved in the outputSRIRPath
 %   INPUT
-%       rawIRPath           relative path for raw SIRs
-%       processedIRPath     relative path for processed SIRs
+%       inputSRIRPath   relative path for raw SIRs
+%       outputSRIRPath  relative path for processed SIRs
 %   OUTPUT
-%       outputIRsNormalised onmidirectional SIRs that have been normalised
-%                           relative to one another
+%       outputSRIRs     onmidirectional SRIRs
 
-    % if the output file path does not excist, create it (surpress warning)
-    mkdir(processedIRPath);
+    % if the output file path does not excist, create it
+    mkdir(outputSRIRPath);
 
     % add in required paths
-    %   add in raw audio files to project
-    addpath(rawIRPath);
-    %   add in directory for processed audio files
-    addpath(processedIRPath);
+    addpath(inputSRIRPath);
+    addpath(outputSRIRPath);
     
     % place all .wav files in structs
-    fileStruct = dir(fullfile(rawIRPath,'*.wav'));
+    fileStruct = dir(fullfile(inputSRIRPath,'*.wav'));
+
+    % cell for output SRIRs
+    outputSRIRs = cell(1, numel(fileStruct)/4);
 
     tic
     
@@ -43,13 +43,13 @@ function outputIRs = omniBatchConversion(rawIRPath, processedIRPath)
         % variables
         for k = 1: size(fileNames, 1)
                 if fileNames(k, end - 8) == 'N'
-                    northFileName = strcat(rawIRPath, fileNames(k, :));
+                    northFileName = strcat(inputSRIRPath, fileNames(k, :));
                 elseif fileNames(k, end - 8) == 'E'
-                    eastFileName = strcat(rawIRPath, fileNames(k, :));
+                    eastFileName = strcat(inputSRIRPath, fileNames(k, :));
                 elseif fileNames(k, end - 8) == 'S'
-                    southFileName = strcat(rawIRPath, fileNames(k, :));
+                    southFileName = strcat(inputSRIRPath, fileNames(k, :));
                 elseif fileNames(k, end - 8) == 'W'
-                    westFileName = strcat(rawIRPath, fileNames(k, :));
+                    westFileName = strcat(inputSRIRPath, fileNames(k, :));
                 else
                     % throw error if the file name does not have an 'N', 
                     % 'E', 'S' or 'W' in the expected location
@@ -58,23 +58,23 @@ function outputIRs = omniBatchConversion(rawIRPath, processedIRPath)
         end
 
         % convert the audio file to omnidirectional
-        [outputIRs{i}, Fs] = NESWtoOmni(    northFileName, eastFileName, ...
+        [outputSRIRs{i}, Fs] = NESWtoOmni(    northFileName, eastFileName, ...
                                             southFileName, westFileName);
     end
 
-    % write each IR to an audio file
+    % write each SRIR to an audio file
     for k = 1:length(fileStruct)
         % for each North IR
         if fileStruct(k).name(end - 8) == 'N'
             % use this name to construct the name for the omnidirectional
-            % IR
+            % SRIR
             inputFileName = fileStruct(k).name;
             splitName = split(inputFileName, "N");
-            outputFileName = strcat(processedIRPath, '/', splitName{1},...
+            outputFileName = strcat(outputSRIRPath, '/', splitName{1},...
                 'Omni', splitName{2});
 
             % write each IR to an audio file
-            audiowrite( outputFileName, outputIRs{ceil(k/4)}, ...
+            audiowrite( outputFileName, outputSRIRs{ceil(k/4)}, ...
                         Fs, 'BitsPerSample', 24);
         end
     end
