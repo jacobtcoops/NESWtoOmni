@@ -41,5 +41,5 @@ function [outputIR, Fs] = NESWtoOmni(northFileName, eastFileName,...
     end
 
     % sum audio
-    outputIR = north + south + east + west;
+    outputIR = (north + south + east + west)./4;
 end

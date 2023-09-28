@@ -1,4 +1,4 @@
-function outputIRsNormalised = ambisonicOmniConverter(rawIRPath, processedIRPath)
+function outputIRs = omniBatchConversion(rawIRPath, processedIRPath)
 %ambisonicOmniConverter     converts folder of SIRs to omnidirectional
 %   function takes in a path and converts groups of four SIRs from a single
 %   source-receiver combination with 4 orientations to a single,
@@ -12,6 +12,9 @@ function outputIRsNormalised = ambisonicOmniConverter(rawIRPath, processedIRPath
 %       outputIRsNormalised onmidirectional SIRs that have been normalised
 %                           relative to one another
 
+    % if the output file path does not excist, create it (surpress warning)
+    mkdir(processedIRPath);
+
     % add in required paths
     %   add in raw audio files to project
     addpath(rawIRPath);
@@ -20,6 +23,8 @@ function outputIRsNormalised = ambisonicOmniConverter(rawIRPath, processedIRPath
     
     % place all .wav files in structs
     fileStruct = dir(fullfile(rawIRPath,'*.wav'));
+
+    tic
     
     % loop through audio files in groups of four
     %   this assumes appropriate naming of files (i.e. N, E, S and W are
@@ -51,22 +56,10 @@ function outputIRsNormalised = ambisonicOmniConverter(rawIRPath, processedIRPath
                     error('File names not in the correct format.');
                 end
         end
-    
+
         % convert the audio file to omnidirectional
         [outputIRs{i}, Fs] = NESWtoOmni(    northFileName, eastFileName, ...
                                             southFileName, westFileName);
-    end
-
-    % find maximum peak across all IRs
-    for j = 1: length(outputIRs)
-        % array of maxima across the IRs
-        maxima(j) = max(abs(outputIRs{j}), [], 'all');
-    end
-    maximum = max(maxima);
-
-    % normalise IRs relative to the maximum peak across all of them
-    for j = 1: length(outputIRs)
-        outputIRsNormalised{j} = 0.99 * outputIRs{j}./maximum;
     end
 
     % write each IR to an audio file
@@ -81,8 +74,10 @@ function outputIRsNormalised = ambisonicOmniConverter(rawIRPath, processedIRPath
                 'Omni', splitName{2});
 
             % write each IR to an audio file
-            audiowrite( outputFileName, outputIRsNormalised{ceil(k/4)}, ...
+            audiowrite( outputFileName, outputIRs{ceil(k/4)}, ...
                         Fs, 'BitsPerSample', 24);
         end
     end
+
+    toc
 end

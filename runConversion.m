@@ -1,13 +1,18 @@
 close all
 clear
 
+MV4_inputPath = 'D:\_RESOURCE\MaidaVale-IRs\230925_2-N3D-All\MV4\AS2\AS2\TOA\';
+MV4_convertedPath = ['D:\_RESOURCE\MaidaVale-IRs\230928-N3D-Omni-All' ...
+        '\MV4\AS2\AS2\TOA\'];
+
 % convert third order files
-ThirdOAIRsNormalised = ambisonicOmniConverter(  'Audio Files/Raw IRs/3OA/',...
-                                                'Audio Files/Processed IRs/3OA/'    );
+MV4_outputSRIRs = omniBatchConversion(  MV4_inputPath,...
+                                        MV4_convertedPath    );
 
-% remove pre-delay and direct sound from third order files
-ThirdOAIRsExport = removePD_DS( 'Audio Files/Processed IRs/3OA/',...
-                                'Audio Files/Exported IRs/3OA/'         );
+MV5_inputPath = 'D:\_RESOURCE\MaidaVale-IRs\230925_2-N3D-All\MV5\AS1\AS1\TOA\';
+MV5_convertedPath = ['D:\_RESOURCE\MaidaVale-IRs\230928-N3D-Omni-All' ...
+        '\MV5\AS1\AS1\TOA\'];
 
-% create config files for third order files
-createMcfxConfigs('Audio Files/Exported IRs/3OA/');
+% convert third order files
+MV5_outputSRIRs = omniBatchConversion(  MV5_inputPath,...
+                                        MV5_convertedPath    );
