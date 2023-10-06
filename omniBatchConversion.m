@@ -2,12 +2,12 @@ function outputSRIRs = omniBatchConversion(inputSRIRPath, outputSRIRPath)
 %omniBatchConversion     converts folder of SRIRs to omnidirectional
 %   function takes in a path and converts groups of four SRIRs from a 
 %   single source-receiver combination with 4 orientations to a single,
-%   omnidirectional SIR
+%   omnidirectional SRIR
 %   this interfaces with the function NESWtoOmni.m
-%   the resultant SIRs are saved in the outputSRIRPath
+%   the resultant SRIRs are saved in the outputSRIRPath
 %   INPUT
-%       inputSRIRPath   relative path for raw SIRs
-%       outputSRIRPath  relative path for processed SIRs
+%       inputSRIRPath   relative path for raw SRIRs
+%       outputSRIRPath  relative path for processed SRIRs
 %   OUTPUT
 %       outputSRIRs     onmidirectional SRIRs
 
@@ -64,7 +64,7 @@ function outputSRIRs = omniBatchConversion(inputSRIRPath, outputSRIRPath)
 
     % write each SRIR to an audio file
     for k = 1:length(fileStruct)
-        % for each North IR
+        % for each North SRIR
         if fileStruct(k).name(end - 8) == 'N'
             % use this name to construct the name for the omnidirectional
             % SRIR
@@ -73,7 +73,7 @@ function outputSRIRs = omniBatchConversion(inputSRIRPath, outputSRIRPath)
             outputFileName = strcat(outputSRIRPath, '/', splitName{1},...
                 'Omni', splitName{2});
 
-            % write each IR to an audio file
+            % write each SRIR to an audio file
             audiowrite( outputFileName, outputSRIRs{ceil(k/4)}, ...
                         Fs, 'BitsPerSample', 24);
         end
